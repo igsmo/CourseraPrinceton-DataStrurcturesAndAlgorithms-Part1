@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c1e4f978-b3bd-4ae1-84e9-9e1170bce808" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Percolation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PercolationStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Percolation.class" beforeDir="false" afterPath="$PROJECT_DIR$/Percolation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Percolation.java" beforeDir="false" afterPath="$PROJECT_DIR$/Percolation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PercolationStats.class" beforeDir="false" afterPath="$PROJECT_DIR$/PercolationStats.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PercolationStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/PercolationStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PercolationVisualizer.class" beforeDir="false" afterPath="$PROJECT_DIR$/PercolationVisualizer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PercolationVisualizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/PercolationVisualizer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,11 +85,11 @@
     <option name="showModules" value="false" />
     <option name="sortByType" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "last_opened_file_path": "C:/Users/smora/OneDrive/SDU/DSA/Assignments/CourseraPrinceton-DataStrurcturesAndAlgorithms-Part1/Week1-Percolation/IntelliJ-Project"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/smora/OneDrive/SDU/DSA/Assignments/CourseraPrinceton-DataStrurcturesAndAlgorithms-Part1/Week1-Percolation/IntelliJ-Project&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\smora\OneDrive\SDU\DSA\Assignments\CourseraPrinceton-DataStrurcturesAndAlgorithms-Part1\Week1-Percolation\IntelliJ-Project" />

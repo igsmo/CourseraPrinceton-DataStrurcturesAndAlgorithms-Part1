@@ -11,6 +11,7 @@ import edu.princeton.cs.algs4.StdStats;
  * in a 2D grid when choosing random cells to be closed.
  */
 public class PercolationStats {
+    private static final double CONFIDENCE_FACTOR = 1.96;
 
     /**
      * Stores all the results of calculated thresholds.
@@ -69,7 +70,7 @@ public class PercolationStats {
      * @return Lower bound of 95% confidence of threshold values.
      */
     public double confidenceLo() {
-        return mean() - 1.96 / Math.sqrt(this.trials);
+        return mean() - CONFIDENCE_FACTOR / Math.sqrt(this.trials);
     }
 
     /**
@@ -80,7 +81,7 @@ public class PercolationStats {
      * @return Upper bound of 95% confidence of threshold values.
      */
     public double confidenceHi() {
-        return mean() + 1.96 / Math.sqrt(this.trials);
+        return mean() + CONFIDENCE_FACTOR / Math.sqrt(this.trials);
     }
 
     /**

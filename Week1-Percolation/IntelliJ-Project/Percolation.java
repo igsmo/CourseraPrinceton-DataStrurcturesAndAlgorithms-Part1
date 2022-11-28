@@ -13,7 +13,7 @@ public class Percolation {
     /**
      * 2D grid containing information if a cell is open or closed.
      */
-    private int[][] grid;
+    private boolean[] grid;
     /**
      * Count of open sites in the grid.
      */
@@ -29,8 +29,7 @@ public class Percolation {
 
     /**
      * Constructor for Percolation class.
-     * Initializes all the variables and closes all the cells in the grid.'
-     * Opens top and bottom rows.
+     * Initializes all the variables and closes all the cells in the grid.
      *
      * @param n Edge size of a square grid.
      */
@@ -40,47 +39,22 @@ public class Percolation {
         if (0 >= this.n)
             throw new IllegalArgumentException();
 
-        this.grid = new int[this.n][this.n];
+        /**
+         * Initialization of grid and unionUF size is set to n^2 + 2.
+         * It is because, we define an imaginary part of the grid, which is
+         * on the top and the bottom. It will help to perform the
+         * perlocates() function quicker, than if we connected the whole
+         * top and bottom rows and checked for union with each of the cells.
+         *
+         * The concept of the imaginary top and bottom is that we simply move
+         * the whole grid by one place to the right (we move the 1D array to index + 1).
+         * It makes our case even easier, as the grid provided by the test
+         * files is 1-indexed.
+         */
+        this.grid = new boolean[this.n * this.n + 2];
+        this.unionUF = new WeightedQuickUnionUF(this.n * this.n + 2);
+
         this.openSites = 0;
-        this.unionUF = new WeightedQuickUnionUF(this.n * this.n);
-
-        blockAllSites();
-
-        openBottomAndTopRow();
-    }
-
-    /**
-     * Opens all cells in the top and bottom row.
-     * It is done to detect percolation from ANY cell in the top or bottom row.
-     * Why it needs to be done?
-     * The implementation of function percolates() checks if the top-left
-     * corner is connected to the bottom-right corner in a grid.
-     * Now, the cells on the top and the bottom are connected, so
-     * any of the cells in those two rows has the same connections.
-     */
-    private void openBottomAndTopRow() {
-        // Iterate through the number of cells in a row
-        for (int i = 0; i <= this.n; i++) {
-            // Connect element 0 (top-left) to i-th element (so the top row)
-            this.unionUF.union(0, i);
-            // Connect element N*N-1 (last element, so bottom-left)
-            // to N*N-1-i element (so the bottom row)
-            this.unionUF.union(this.n * this.n - 1, this.n * this.n - 1 - i);
-        }
-    }
-
-    /**
-     * Initializes all the sites to be blocked.
-     */
-    private void blockAllSites() {
-        // Iterate through every row
-        for (int i = 0; i < this.n; i++) {
-            // Iterate through every column
-            for (int j = 0; j < this.n; j++) {
-                // Set grid value to 1 (blocked)
-                this.grid[i][j] = 1;
-            }
-        }
     }
 
     /**
@@ -91,8 +65,17 @@ public class Percolation {
      * @return Index of element in union.
      */
     private int getIdFromCoords(int row, int col) {
+        checkOutOfBounds(row, col);
 
         return (row - 1) * this.n + (col - 1);
+    }
+
+    /**
+     * Checks if the coordinates are within bounds of the grid.
+     */
+    private void checkOutOfBounds(int row, int col) {
+        if (row > this.n || row < 1 || col > this.n || col < 1)
+            throw new IllegalArgumentException();
     }
 
     /**
@@ -103,26 +86,35 @@ public class Percolation {
      * @param col 1-indexed column number.
      */
     public void open(int row, int col) {
-        if (row - 1 >= this.n || col - 1 >= this.n)
-            throw new IllegalArgumentException();
-
-        // Don't do anything if already open.
-        if (this.grid[row - 1][col - 1] == 0)
-            return;
-
-        // Open the cell
-        this.grid[row - 1][col - 1] = 0;
+        checkOutOfBounds(row, col);
 
         int id = getIdFromCoords(row, col);
 
+        // Don't do anything if already open.
+        if (this.grid[id])
+            return;
+
+        /**
+         * This if statement connects the grid to the imaginary rows.
+         */
+        if (row == 1) {
+            unionUF.union(0, id);
+        }
+        else if (row == this.n) {
+            unionUF.union(this.n * this.n + 1, id);
+        }
+
+        // Open the cell
+        this.grid[id] = true;
+
         // If one of the surrounding points is open, connects it.
-        if (isOpen(row - 1, col))
+        if (row != 1 && isOpen(row - 1, col))
             this.unionUF.union(getIdFromCoords(row - 1, col), id);
-        if (isOpen(row + 1, col))
+        if (row != this.n && isOpen(row + 1, col))
             this.unionUF.union(getIdFromCoords(row + 1, col), id);
-        if (isOpen(row, col - 1))
+        if (col != 1 && isOpen(row, col - 1))
             this.unionUF.union(getIdFromCoords(row, col - 1), id);
-        if (isOpen(row, col + 1))
+        if (col != this.n && isOpen(row, col + 1))
             this.unionUF.union(getIdFromCoords(row, col + 1), id);
 
         // Increment open site count
@@ -137,11 +129,11 @@ public class Percolation {
      * @return true if cell is open, false if closed OR outside the grid bounds.
      */
     public boolean isOpen(int row, int col) {
-        // Check if outside bounds and return false if so
-        if (row - 1 >= this.n || col - 1 >= this.n || row - 1 < 0 || col - 1 < 0)
-            return false;
+        checkOutOfBounds(row, col);
 
-        return this.grid[row - 1][col - 1] == 0;
+        int id = getIdFromCoords(row, col);
+
+        return this.grid[id];
     }
 
     /**
@@ -152,11 +144,14 @@ public class Percolation {
      * @return true if cell is closed, false if open OR outside the grid bounds.
      */
     public boolean isFull(int row, int col) {
-        // Check if outside bounds and return false if so
-        if (row - 1 >= this.n || col - 1 >= this.n || row - 1 < 0 || col - 1 < 0)
+        // No need to check for checkOutOfBounds, as isOpen is doing it.
+        if (!isOpen(row, col))
             return false;
 
-        return this.grid[row - 1][col - 1] == 1;
+        // Returns true if it is connected to virtual top or bottom.
+        int id = getIdFromCoords(row, col);
+
+        return (unionUF.find(id) == unionUF.find(0));
     }
 
     /**
@@ -175,7 +170,7 @@ public class Percolation {
      * @return true if percolates, false otherwise.
      */
     public boolean percolates() {
-        return unionUF.connected(0, this.n * this.n - 1);
+        return unionUF.find(0) == unionUF.find(this.n * this.n + 1);
     }
 
 }
